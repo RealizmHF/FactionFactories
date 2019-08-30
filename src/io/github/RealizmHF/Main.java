@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
@@ -15,30 +16,45 @@ public class Main extends JavaPlugin {
 		
 		createConfig();
 		
+		createFactoryConfig();
+		
 		FactoryManager factories = new FactoryManager(this);
 		
 		factories.getFactoryManager().reloadFactories();
 		
 		FactoryEvent fEvent = new FactoryEvent(this);
 		
-		
-		/*
-		 * Need to remove blocks from the cupboard over time
-		 * Need to fix cupboard block area
-		 * 
-		 * 
-		 * I would like to allow players to place 
-		 * non-configured upkeep items into their upkeeps
-		 * if they have the correct permission option: if authorized, if owner
-		 * 
-		 * 
-		 * Check CommandExecute Class you made for info to use this
-		 */
-		
-		//this.getCommand("rc").setExecutor(new CommandExecute(this));
 	}
 	
 	
+	private void createFactoryConfig() {
+		
+		File file = new File("");
+		try {
+            if (!getDataFolder().exists()) {
+                getDataFolder().mkdirs();
+            }
+            file = new File(getDataFolder(), "factoryconfig.yml");
+            if (!file.exists()) {
+                getLogger().info("FactoryConfig.yml not found, creating!");
+                this.saveConfig();
+            } else {
+                getLogger().info("FactoryConfig.yml found, loading!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+		
+		FileConfiguration c = YamlConfiguration.loadConfiguration(file);
+		
+		c.options().header("FactionFactories Config: \n");
+
+		c.addDefault("factoryBlock", Material.GOLD_BLOCK.toString());
+		
+	}
+
+
 	@Override
 	public void onDisable() {
 		
@@ -47,11 +63,12 @@ public class Main extends JavaPlugin {
 
 	private void createConfig() {
 		
+		File file = new File("");
 		try {
             if (!getDataFolder().exists()) {
                 getDataFolder().mkdirs();
             }
-            File file = new File(getDataFolder(), "config.yml");
+            file = new File(getDataFolder(), "config.yml");
             if (!file.exists()) {
                 getLogger().info("Config.yml not found, creating!");
                 this.saveConfig();
@@ -63,7 +80,7 @@ public class Main extends JavaPlugin {
 
         }
 		
-		FileConfiguration c = this.getConfig();
+		FileConfiguration c = YamlConfiguration.loadConfiguration(file);
 		
 		c.options().header("FactionFactories Config: \n");
 

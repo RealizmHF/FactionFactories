@@ -6,8 +6,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
+import com.massivecraft.factions.Factions;
 import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;
+import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.massivecore.ps.PS;
 
 public class FactoryEvent implements Listener {
@@ -29,7 +31,8 @@ public class FactoryEvent implements Listener {
 			Faction faction = BoardColl.get().getFactionAt(PS.valueOf(event.getBlock().getLocation()));
 
 			//Check if the factory is being placed inside a faction
-			if(faction != null) {
+			//Check if the player is in their own faction territory
+			if(faction != null && MPlayer.get(event.getPlayer().getUniqueId()).isInOwnTerritory()) {
 
 				int radius = plugin.getConfig().getInt("radius");
 				Faction checkXPlus = BoardColl.get().getFactionAt(PS.valueOf(new Location(event.getBlock().getWorld(), event.getBlock().getLocation().getX() + radius, event.getBlock().getLocation().getY(), event.getBlock().getLocation().getZ())));
@@ -49,6 +52,8 @@ public class FactoryEvent implements Listener {
 						//Add the new factory to the current list of factories
 						factories.addFactory(newFactory);
 						count++;
+						event.getPlayer().sendMessage("New Factory Placed!");
+						
 					}
 					else {
 						//Else, Factory is overlapping already existing factory(s)
@@ -75,7 +80,7 @@ public class FactoryEvent implements Listener {
 				 * Plans to format text with bold and coloring
 				 */
 				event.setCancelled(true);
-				event.getPlayer().sendMessage("[FF] You can't place a factory outside of a faction territory!");
+				event.getPlayer().sendMessage("[FF] You can't place a factory outside of your own faction territory!");
 			}
 			
 			
