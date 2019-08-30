@@ -4,5 +4,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="/Users/james/Desktop/Minecraft Related/Minecraft Builds/BuildTools 1.8/spigot-1.8-R0.1-SNAPSHOT-latest.jar"/>
 	<classpathentry kind="lib" path="/Users/james/Desktop/Minecraft Related/Minecraft Builds/BuildTools 1.8/Spigot-1.8-API/spigot-api-1.8-R0.1-20150222.110809-187-javadoc.jar"/>
+	<classpathentry kind="lib" path="/Users/james/Downloads/Factions-2.14.0/Factions.jar"/>
+	<classpathentry kind="lib" path="/Users/james/Downloads/Factions-2.14.0/MassiveCore.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

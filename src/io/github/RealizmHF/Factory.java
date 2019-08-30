@@ -16,24 +16,26 @@ public class Factory {
 	private double repairMultiplier;
 	private Location factoryLocation;
 	private int inventorySize;
-	private int factorySize;
+	private int factoryRadius;
 	private ArrayList<UUID> authorized;
 	private int factoryLevel;
 	private int factoryTier;
 	private Material tempBluePrint = Material.GOLD_BLOCK;
+	private int factoryID;
 	
 	
 	/*
 	 * Creates a Factory of tier 1
 	 */
-	public Factory(Main plugin, Player p, Location l) {
+	public Factory(Main plugin, Player p, Location l, int id) {
 		this.plugin = plugin;
 		
+		factoryID = id;
 		isBroken = false;
 		health = 100;
 		repairMultiplier = plugin.getConfig().getDouble("repair");
 		inventorySize = plugin.getConfig().getInt("inventory size");
-		factorySize = plugin.getConfig().getInt("radius");
+		factoryRadius = plugin.getConfig().getInt("radius");
 		factoryLocation = l;
 		authorized.add(p.getUniqueId());
 		factoryLevel = 0;
@@ -44,14 +46,15 @@ public class Factory {
 	/*
 	 * Creates a Factory with a custom tier
 	 */
-	public Factory(Main plugin, Player p, Location l, int tier) {
+	public Factory(Main plugin, Player p, Location l, int id, int tier) {
 		this.plugin = plugin;
 		
+		factoryID = id;
 		isBroken = false;
 		health = 100;
 		repairMultiplier = plugin.getConfig().getDouble("repair");
 		inventorySize = plugin.getConfig().getInt("inventory size");
-		factorySize = plugin.getConfig().getInt("radius");
+		factoryRadius = plugin.getConfig().getInt("radius");
 		factoryLocation = l;
 		authorized.add(p.getUniqueId());
 		factoryLevel = 0;
@@ -80,6 +83,9 @@ public class Factory {
 	public int getFactoryLevel() {
 		return factoryLevel;
 	}
+	public int getFactoryRadius() {
+		return factoryRadius;
+	}
 	public int getFactoryTier() {
 		return factoryTier;
 	}
@@ -105,5 +111,8 @@ public class Factory {
 	}
 	public void setFactoryLevel(int newLevel) {
 		factoryLevel = newLevel;
+	}
+	public void setFactoryRadius(int newRadius) {
+		factoryRadius = newRadius;
 	}
 }
