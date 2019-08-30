@@ -15,9 +15,9 @@ public class Main extends JavaPlugin {
 		
 		createConfig();
 		
-		Factory factories = new Factory(this);
+		FactoryManager factories = new FactoryManager(this);
 		
-		factories.getFactories().reloadFactories();
+		factories.getFactoryManager().reloadFactories();
 		
 		FactoryEvent fEvent = new FactoryEvent(this);
 		

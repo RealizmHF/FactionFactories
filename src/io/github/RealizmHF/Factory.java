@@ -23,11 +23,14 @@ public class Factory {
 	private Material tempBluePrint = Material.GOLD_BLOCK;
 	
 	
+	/*
+	 * Creates a Factory of tier 1
+	 */
 	public Factory(Main plugin, Player p, Location l) {
 		this.plugin = plugin;
 		
 		isBroken = false;
-		health = 10;
+		health = 100;
 		repairMultiplier = plugin.getConfig().getDouble("repair");
 		inventorySize = plugin.getConfig().getInt("inventory size");
 		factorySize = plugin.getConfig().getInt("radius");
@@ -38,11 +41,14 @@ public class Factory {
 		
 	}
 	
+	/*
+	 * Creates a Factory with a custom tier
+	 */
 	public Factory(Main plugin, Player p, Location l, int tier) {
 		this.plugin = plugin;
 		
 		isBroken = false;
-		health = 10;
+		health = 100;
 		repairMultiplier = plugin.getConfig().getDouble("repair");
 		inventorySize = plugin.getConfig().getInt("inventory size");
 		factorySize = plugin.getConfig().getInt("radius");
@@ -52,7 +58,13 @@ public class Factory {
 		factoryTier = tier;
 		
 	}
-	
+	/*
+	 * 
+	 * 
+	 * Getters
+	 * 
+	 * 
+	 */
 	public boolean isBroke() {
 		return isBroken;
 	}
@@ -71,7 +83,13 @@ public class Factory {
 	public int getFactoryTier() {
 		return factoryTier;
 	}
-	
+	/*
+	 * 
+	 * 
+	 * Setters
+	 * 
+	 * 
+	 */
 	public void setBroke() {
 		//sets isBroke to the opposite of its current value
 		isBroken = !isBroken;
