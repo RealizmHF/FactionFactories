@@ -1,10 +1,12 @@
 package io.github.RealizmHF;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
@@ -23,6 +25,9 @@ public class Factory {
 	private Material tempBluePrint = Material.GOLD_BLOCK;
 	private int factoryID;
 	
+	private YamlConfiguration factoryFile = YamlConfiguration.loadConfiguration(new File("factoryconfig.yml"));
+	private YamlConfiguration configFile = YamlConfiguration.loadConfiguration(new File("config.yml"));
+	
 	
 	/*
 	 * Creates a Factory of tier 1
@@ -33,13 +38,23 @@ public class Factory {
 		factoryID = id;
 		isBroken = false;
 		health = 100;
-		repairMultiplier = plugin.getConfig().getDouble("repair");
-		inventorySize = plugin.getConfig().getInt("inventory size");
-		factoryRadius = plugin.getConfig().getInt("radius");
+		repairMultiplier = configFile.getDouble("repair");
+		inventorySize = configFile.getInt("inventory size");
+		factoryRadius = configFile.getInt("radius");
 		factoryLocation = l;
 		authorized.add(p.getUniqueId());
 		factoryLevel = 0;
 		factoryTier = 1;
+		
+		//Add factory to config
+		factoryFile.createSection("factories." + id);
+		factoryFile.createSection("factories." + id + ".authorized");
+		factoryFile.createSection("factories." + id + ".authorized." + p.getUniqueId());
+		factoryFile.addDefault("factories." + id + ".x", l.getX());
+		factoryFile.addDefault("factories." + id + ".y", l.getY());
+		factoryFile.addDefault("factories." + id + ".z", l.getZ());
+		factoryFile.addDefault("factories." + id + ".level", this.getFactoryLevel());
+		factoryFile.addDefault("factories." + id + ".tier", this.getFactoryTier());
 		
 	}
 	
@@ -52,14 +67,24 @@ public class Factory {
 		factoryID = id;
 		isBroken = false;
 		health = 100;
-		repairMultiplier = plugin.getConfig().getDouble("repair");
-		inventorySize = plugin.getConfig().getInt("inventory size");
-		factoryRadius = plugin.getConfig().getInt("radius");
+		repairMultiplier = configFile.getDouble("repair");
+		inventorySize = configFile.getInt("inventory size");
+		factoryRadius = configFile.getInt("radius");
 		factoryLocation = l;
 		authorized.add(p.getUniqueId());
 		factoryLevel = 0;
 		factoryTier = tier;
 		
+		//Add factory to config
+		factoryFile.createSection("factories." + id);
+		factoryFile.createSection("factories." + id + ".authorized");
+		factoryFile.createSection("factories." + id + ".authorized." + p.getUniqueId());
+		factoryFile.addDefault("factories." + id + ".x", l.getX());
+		factoryFile.addDefault("factories." + id + ".y", l.getY());
+		factoryFile.addDefault("factories." + id + ".z", l.getZ());
+		factoryFile.addDefault("factories." + id + ".level", this.getFactoryLevel());
+		factoryFile.addDefault("factories." + id + ".tier", this.getFactoryTier());
+				
 	}
 	/*
 	 * 

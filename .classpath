@@ -2,9 +2,18 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="/Users/james/Desktop/Minecraft Related/Minecraft Builds/BuildTools 1.8/spigot-1.8-R0.1-SNAPSHOT-latest.jar"/>
 	<classpathentry kind="lib" path="/Users/james/Desktop/Minecraft Related/Minecraft Builds/BuildTools 1.8/Spigot-1.8-API/spigot-api-1.8-R0.1-20150222.110809-187-javadoc.jar"/>
 	<classpathentry kind="lib" path="/Users/james/Downloads/Factions-2.14.0/Factions.jar"/>
 	<classpathentry kind="lib" path="/Users/james/Downloads/Factions-2.14.0/MassiveCore.jar"/>
+	<classpathentry kind="lib" path="/Users/james/.m2/repository/org/bukkit/bukkit/1.8-R0.1-SNAPSHOT/bukkit-1.8-R0.1-SNAPSHOT.jar" sourcepath="/Users/james/.m2/repository/org/bukkit/bukkit/1.8-R0.1-SNAPSHOT/bukkit-1.8-R0.1-SNAPSHOT-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="maven.groupId" value="org.bukkit"/>
+			<attribute name="maven.artifactId" value="bukkit"/>
+			<attribute name="maven.version" value="1.8-R0.1-SNAPSHOT"/>
+			<attribute name="maven.scope" value="provided"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Users/james/Desktop/Minecraft Related/Minecraft Builds/BuildTools 1.8/spigot-1.8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

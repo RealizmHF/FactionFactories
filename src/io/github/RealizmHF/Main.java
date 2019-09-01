@@ -1,6 +1,7 @@
 package io.github.RealizmHF;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -25,7 +26,13 @@ public class Main extends JavaPlugin {
 		FactoryEvent fEvent = new FactoryEvent(this);
 		
 	}
-	
+
+	@Override
+	public void onDisable() {
+		
+		this.saveConfig();
+	}
+
 	
 	private void createFactoryConfig() {
 		
@@ -50,17 +57,16 @@ public class Main extends JavaPlugin {
 		
 		c.options().header("FactionFactories Config: \n");
 
-		c.addDefault("factoryBlock", Material.GOLD_BLOCK.toString());
+		c.createSection("factories");
 		
+		c.options().copyDefaults(true);
+		try {
+			c.save(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
-
-
-	@Override
-	public void onDisable() {
-		
-		this.saveConfig();
-	}
-
+	
 	private void createConfig() {
 		
 		File file = new File("");
@@ -80,7 +86,7 @@ public class Main extends JavaPlugin {
 
         }
 		
-		FileConfiguration c = YamlConfiguration.loadConfiguration(file);
+		YamlConfiguration c = YamlConfiguration.loadConfiguration(file);
 		
 		c.options().header("FactionFactories Config: \n");
 
@@ -119,7 +125,11 @@ public class Main extends JavaPlugin {
 		
 		
 		c.options().copyDefaults(true);
-		saveConfig();
+		try {
+			c.save(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		reloadConfig();
 	}
 }

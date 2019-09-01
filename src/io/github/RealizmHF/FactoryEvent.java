@@ -1,7 +1,10 @@
 package io.github.RealizmHF;
 
+import java.io.File;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -17,6 +20,9 @@ public class FactoryEvent implements Listener {
 	private Main plugin;
 	private FactoryManager factories = new FactoryManager(plugin);
 	private int count = 0;
+	
+	private YamlConfiguration factoryFile = YamlConfiguration.loadConfiguration(new File("factoryconfig.yml"));
+	private YamlConfiguration configFile = YamlConfiguration.loadConfiguration(new File("config.yml"));
 	
 	public FactoryEvent(Main plugin) {
 		this.plugin = plugin;
@@ -34,7 +40,7 @@ public class FactoryEvent implements Listener {
 			//Check if the player is in their own faction territory
 			if(faction != null && MPlayer.get(event.getPlayer().getUniqueId()).isInOwnTerritory()) {
 
-				int radius = plugin.getConfig().getInt("radius");
+				int radius = configFile.getInt("radius");
 				Faction checkXPlus = BoardColl.get().getFactionAt(PS.valueOf(new Location(event.getBlock().getWorld(), event.getBlock().getLocation().getX() + radius, event.getBlock().getLocation().getY(), event.getBlock().getLocation().getZ())));
 				Faction checkXMinus = BoardColl.get().getFactionAt(PS.valueOf(new Location(event.getBlock().getWorld(), event.getBlock().getLocation().getX() - radius, event.getBlock().getLocation().getY(), event.getBlock().getLocation().getZ())));
 				Faction checkZPlus = BoardColl.get().getFactionAt(PS.valueOf(new Location(event.getBlock().getWorld(), event.getBlock().getLocation().getX(), event.getBlock().getLocation().getY(), event.getBlock().getLocation().getZ() + radius)));
@@ -52,6 +58,7 @@ public class FactoryEvent implements Listener {
 						//Add the new factory to the current list of factories
 						factories.addFactory(newFactory);
 						count++;
+						
 						event.getPlayer().sendMessage("New Factory Placed!");
 						
 					}
