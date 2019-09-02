@@ -9,7 +9,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
-import com.massivecraft.factions.Factions;
 import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.MPlayer;
@@ -21,7 +20,6 @@ public class FactoryEvent implements Listener {
 	private FactoryManager factories = new FactoryManager(plugin);
 	private int count = 0;
 	
-	private YamlConfiguration factoryFile = YamlConfiguration.loadConfiguration(new File("factoryconfig.yml"));
 	private YamlConfiguration configFile = YamlConfiguration.loadConfiguration(new File("config.yml"));
 	
 	public FactoryEvent(Main plugin) {
@@ -30,6 +28,8 @@ public class FactoryEvent implements Listener {
 	
 	@EventHandler
 	public void onBluePrintPlaced(BlockPlaceEvent event) {
+		
+		event.getPlayer().sendMessage("count: " + count);
 		
 		//Check to make sure the block being placed is a factory block
 		if(event.getBlock().getType() == Material.GOLD_BLOCK) {

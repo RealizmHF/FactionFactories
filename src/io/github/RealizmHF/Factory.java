@@ -4,11 +4,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 
 public class Factory {
 	
@@ -42,6 +42,7 @@ public class Factory {
 		inventorySize = configFile.getInt("inventory size");
 		factoryRadius = configFile.getInt("radius");
 		factoryLocation = l;
+		authorized = new ArrayList<UUID>();
 		authorized.add(p.getUniqueId());
 		factoryLevel = 0;
 		factoryTier = 1;
@@ -55,6 +56,7 @@ public class Factory {
 		factoryFile.addDefault("factories." + id + ".z", l.getZ());
 		factoryFile.addDefault("factories." + id + ".level", this.getFactoryLevel());
 		factoryFile.addDefault("factories." + id + ".tier", this.getFactoryTier());
+		
 		
 	}
 	
@@ -93,6 +95,12 @@ public class Factory {
 	 * 
 	 * 
 	 */
+	public double getRepairMultiplier() {
+		return repairMultiplier;
+	}
+	public int getFactoryID() {
+		return factoryID;
+	}
 	public boolean isBroke() {
 		return isBroken;
 	}

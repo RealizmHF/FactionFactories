@@ -3,6 +3,7 @@ package io.github.RealizmHF;
 import java.io.File;
 import java.io.IOException;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -24,6 +25,8 @@ public class Main extends JavaPlugin {
 		factories.getFactoryManager().reloadFactories();
 		
 		FactoryEvent fEvent = new FactoryEvent(this);
+		
+		getServer().getPluginManager().registerEvents(new FactoryEvent(this), this);
 		
 	}
 
@@ -98,7 +101,8 @@ public class Main extends JavaPlugin {
 		c.addDefault("space between factories", 3);
 		
 		c.addDefault("inventory size", 9);
-		c.addDefault("repair", 2);
+		c.addDefault("repair", 1.1);
+		c.addDefault("health timer", 1000);
 
 		c.createSection("tiers");
 		c.addDefault("tiers.coal", 1);
@@ -130,6 +134,5 @@ public class Main extends JavaPlugin {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		reloadConfig();
 	}
 }
