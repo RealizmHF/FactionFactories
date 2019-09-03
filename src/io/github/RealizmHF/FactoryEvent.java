@@ -1,6 +1,7 @@
 package io.github.RealizmHF;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,16 +21,13 @@ public class FactoryEvent implements Listener {
 	private FactoryManager factories = new FactoryManager(plugin);
 	private int count = 0;
 	
-	private YamlConfiguration configFile = YamlConfiguration.loadConfiguration(new File("config.yml"));
-	
 	public FactoryEvent(Main plugin) {
 		this.plugin = plugin;
+		this.plugin.getServer().getPluginManager().registerEvents(this, this.plugin);
 	}
 	
 	@EventHandler
-	public void onBluePrintPlaced(BlockPlaceEvent event) {
-		
-		event.getPlayer().sendMessage("count: " + count);
+	public void onBluePrintPlaced(BlockPlaceEvent event) throws IOException {
 		
 		//Check to make sure the block being placed is a factory block
 		if(event.getBlock().getType() == Material.GOLD_BLOCK) {
@@ -40,7 +38,7 @@ public class FactoryEvent implements Listener {
 			//Check if the player is in their own faction territory
 			if(faction != null && MPlayer.get(event.getPlayer().getUniqueId()).isInOwnTerritory()) {
 
-				int radius = configFile.getInt("radius");
+				int radius = this.plugin.getC().getInt("radius");
 				Faction checkXPlus = BoardColl.get().getFactionAt(PS.valueOf(new Location(event.getBlock().getWorld(), event.getBlock().getLocation().getX() + radius, event.getBlock().getLocation().getY(), event.getBlock().getLocation().getZ())));
 				Faction checkXMinus = BoardColl.get().getFactionAt(PS.valueOf(new Location(event.getBlock().getWorld(), event.getBlock().getLocation().getX() - radius, event.getBlock().getLocation().getY(), event.getBlock().getLocation().getZ())));
 				Faction checkZPlus = BoardColl.get().getFactionAt(PS.valueOf(new Location(event.getBlock().getWorld(), event.getBlock().getLocation().getX(), event.getBlock().getLocation().getY(), event.getBlock().getLocation().getZ() + radius)));
@@ -53,10 +51,11 @@ public class FactoryEvent implements Listener {
 					Factory newFactory = new Factory(plugin, event.getPlayer(), event.getBlock().getLocation(), count);
 					
 					//Check if the factory is overlapping another factory
-					if(factories.inRadius(newFactory)) {
+					if(!factories.inRadius(newFactory)) {
 
 						//Add the new factory to the current list of factories
 						factories.addFactory(newFactory);
+						FactoryScheduleManager.add(event.getPlayer(), newFactory, this.plugin.getC().getLong("health timer"), System.currentTimeMillis());
 						count++;
 						
 						event.getPlayer().sendMessage("New Factory Placed!");

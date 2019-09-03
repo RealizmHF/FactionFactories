@@ -1,6 +1,7 @@
 package io.github.RealizmHF;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -25,22 +26,19 @@ public class Factory {
 	private Material tempBluePrint = Material.GOLD_BLOCK;
 	private int factoryID;
 	
-	private YamlConfiguration factoryFile = YamlConfiguration.loadConfiguration(new File("factoryconfig.yml"));
-	private YamlConfiguration configFile = YamlConfiguration.loadConfiguration(new File("config.yml"));
-	
 	
 	/*
 	 * Creates a Factory of tier 1
 	 */
-	public Factory(Main plugin, Player p, Location l, int id) {
+	public Factory(Main plugin, Player p, Location l, int id) throws IOException {
 		this.plugin = plugin;
 		
 		factoryID = id;
 		isBroken = false;
 		health = 100;
-		repairMultiplier = configFile.getDouble("repair");
-		inventorySize = configFile.getInt("inventory size");
-		factoryRadius = configFile.getInt("radius");
+		repairMultiplier = plugin.getC().getDouble("repair");
+		inventorySize = plugin.getC().getInt("inventory size");
+		factoryRadius = plugin.getC().getInt("radius");
 		factoryLocation = l;
 		authorized = new ArrayList<UUID>();
 		authorized.add(p.getUniqueId());
@@ -48,45 +46,46 @@ public class Factory {
 		factoryTier = 1;
 		
 		//Add factory to config
-		factoryFile.createSection("factories." + id);
-		factoryFile.createSection("factories." + id + ".authorized");
-		factoryFile.createSection("factories." + id + ".authorized." + p.getUniqueId());
-		factoryFile.addDefault("factories." + id + ".x", l.getX());
-		factoryFile.addDefault("factories." + id + ".y", l.getY());
-		factoryFile.addDefault("factories." + id + ".z", l.getZ());
-		factoryFile.addDefault("factories." + id + ".level", this.getFactoryLevel());
-		factoryFile.addDefault("factories." + id + ".tier", this.getFactoryTier());
+		plugin.getCF().createSection("factories." + id);
+		plugin.getCF().createSection("factories." + id + ".authorized");
+		plugin.getCF().createSection("factories." + id + ".authorized." + p.getUniqueId());
+		plugin.getCF().addDefault("factories." + id + ".x", l.getX());
+		plugin.getCF().addDefault("factories." + id + ".y", l.getY());
+		plugin.getCF().addDefault("factories." + id + ".z", l.getZ());
+		plugin.getCF().addDefault("factories." + id + ".level", this.getFactoryLevel());
+		plugin.getCF().addDefault("factories." + id + ".tier", this.getFactoryTier());
 		
-		
+		plugin.getCF().save(plugin.getCFFile());
 	}
 	
 	/*
 	 * Creates a Factory with a custom tier
 	 */
-	public Factory(Main plugin, Player p, Location l, int id, int tier) {
+	public Factory(Main plugin, Player p, Location l, int id, int tier, int level) throws IOException {
 		this.plugin = plugin;
 		
 		factoryID = id;
 		isBroken = false;
 		health = 100;
-		repairMultiplier = configFile.getDouble("repair");
-		inventorySize = configFile.getInt("inventory size");
-		factoryRadius = configFile.getInt("radius");
+		repairMultiplier = plugin.getC().getDouble("repair");
+		inventorySize = plugin.getC().getInt("inventory size");
+		factoryRadius = plugin.getC().getInt("radius");
 		factoryLocation = l;
 		authorized.add(p.getUniqueId());
-		factoryLevel = 0;
+		factoryLevel = level;
 		factoryTier = tier;
 		
 		//Add factory to config
-		factoryFile.createSection("factories." + id);
-		factoryFile.createSection("factories." + id + ".authorized");
-		factoryFile.createSection("factories." + id + ".authorized." + p.getUniqueId());
-		factoryFile.addDefault("factories." + id + ".x", l.getX());
-		factoryFile.addDefault("factories." + id + ".y", l.getY());
-		factoryFile.addDefault("factories." + id + ".z", l.getZ());
-		factoryFile.addDefault("factories." + id + ".level", this.getFactoryLevel());
-		factoryFile.addDefault("factories." + id + ".tier", this.getFactoryTier());
-				
+		plugin.getCF().createSection("factories." + id);
+		plugin.getCF().createSection("factories." + id + ".authorized");
+		plugin.getCF().createSection("factories." + id + ".authorized." + p.getUniqueId());
+		plugin.getCF().addDefault("factories." + id + ".x", l.getX());
+		plugin.getCF().addDefault("factories." + id + ".y", l.getY());
+		plugin.getCF().addDefault("factories." + id + ".z", l.getZ());
+		plugin.getCF().addDefault("factories." + id + ".level", this.getFactoryLevel());
+		plugin.getCF().addDefault("factories." + id + ".tier", this.getFactoryTier());
+		
+		plugin.getCF().save(plugin.getCFFile());
 	}
 	/*
 	 * 

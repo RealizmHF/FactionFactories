@@ -11,6 +11,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 	
+	private File cFile = null;
+	private File cFFile = null;
+	private YamlConfiguration c;
+	private YamlConfiguration cf;
 	
 	@SuppressWarnings("unused")
 	@Override
@@ -22,30 +26,44 @@ public class Main extends JavaPlugin {
 		
 		FactoryManager factories = new FactoryManager(this);
 		
-		factories.getFactoryManager().reloadFactories();
+		try {
+			factories.getFactoryManager().reloadFactories();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		FactoryEvent fEvent = new FactoryEvent(this);
 		
-		getServer().getPluginManager().registerEvents(new FactoryEvent(this), this);
-		
+	    Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+	    	
+            public void run() {
+                FactoryScheduleManager.handleSchedules();
+            }
+        }, 1L, 1L);
 	}
 
 	@Override
 	public void onDisable() {
 		
-		this.saveConfig();
+		try {
+			this.c.save(cFile);
+			this.cf.save(cFFile);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	
 	private void createFactoryConfig() {
 		
-		File file = new File("");
 		try {
             if (!getDataFolder().exists()) {
                 getDataFolder().mkdirs();
             }
-            file = new File(getDataFolder(), "factoryconfig.yml");
-            if (!file.exists()) {
+            cFFile = new File(getDataFolder(), "factoryconfig.yml");
+            if (!cFFile.exists()) {
                 getLogger().info("FactoryConfig.yml not found, creating!");
                 this.saveConfig();
             } else {
@@ -56,29 +74,40 @@ public class Main extends JavaPlugin {
 
         }
 		
-		FileConfiguration c = YamlConfiguration.loadConfiguration(file);
+		cf = YamlConfiguration.loadConfiguration(cFFile);
 		
-		c.options().header("FactionFactories Config: \n");
+		cf.options().header("FactionFactories Config: \n");
 
-		c.createSection("factories");
+		cf.createSection("factories");
 		
-		c.options().copyDefaults(true);
+		cf.options().copyDefaults(true);
 		try {
-			c.save(file);
+			cf.save(cFFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	public YamlConfiguration getC() {
+		return this.c;
+	}
+	public YamlConfiguration getCF() {
+		return this.cf;
+	}
+	public File getCFile() {
+		return this.cFile;
+	}
+	public File getCFFile() {
+		return this.cFFile;
+	}
 	private void createConfig() {
 		
-		File file = new File("");
 		try {
             if (!getDataFolder().exists()) {
                 getDataFolder().mkdirs();
             }
-            file = new File(getDataFolder(), "config.yml");
-            if (!file.exists()) {
+            cFile = new File(getDataFolder(), "config.yml");
+            if (!cFile.exists()) {
                 getLogger().info("Config.yml not found, creating!");
                 this.saveConfig();
             } else {
@@ -89,7 +118,7 @@ public class Main extends JavaPlugin {
 
         }
 		
-		YamlConfiguration c = YamlConfiguration.loadConfiguration(file);
+		c = YamlConfiguration.loadConfiguration(cFile);
 		
 		c.options().header("FactionFactories Config: \n");
 
@@ -130,7 +159,7 @@ public class Main extends JavaPlugin {
 		
 		c.options().copyDefaults(true);
 		try {
-			c.save(file);
+			c.save(cFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
