@@ -24,7 +24,6 @@ public class makeBluePrint extends Enchantment {
 	public EnchantmentTarget getItemTarget() {
 	    return null;
 	}
-
 	@Override
 	public int getMaxLevel() {
 	    return 0;

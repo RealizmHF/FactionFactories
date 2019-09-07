@@ -43,6 +43,7 @@ public class RegionPaster {
     	this.f = file;
     	this.or = origin;
     	
+    	
         editSession = editSessionFactory.getEditSession((com.sk89q.worldedit.world.World) new BukkitWorld(world), 999999999);
         MCEditSchematicFormat.getFormat(file).load(file).paste(editSession, origin, false);
     }
