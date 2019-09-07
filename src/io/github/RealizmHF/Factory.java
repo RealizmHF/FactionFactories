@@ -372,7 +372,7 @@ public class Factory {
 		
 
 		factory.delete();
-		Vector pos1 = new Vector(this.getFactoryLocation().getBlockX()-5, this.getFactoryLocation().getBlockY()+1, this.getFactoryLocation().getBlockZ()-5);
+		Vector pos1 = new Vector(this.getFactoryLocation().getBlockX()-5, this.getFactoryLocation().getBlockY(), this.getFactoryLocation().getBlockZ()-5);
 		Vector pos2 = new Vector(this.getFactoryLocation().getBlockX()+5, this.getFactoryLocation().getBlockY()+17, this.getFactoryLocation().getBlockZ()+5);
 		CuboidRegion region = new CuboidRegion(pos1, pos2);
 		
