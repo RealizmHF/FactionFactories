@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -15,32 +14,32 @@ public class Main extends JavaPlugin {
 	private File cFFile = null;
 	private YamlConfiguration c;
 	private YamlConfiguration cf;
+	private FactoryEvent fEvent;
 	
 	@SuppressWarnings("unused")
 	@Override
 	public void onEnable() {
-		
-		createConfig();
-		
+
 		createFactoryConfig();
+		createConfig();
 		
 		FactoryManager factories = new FactoryManager(this);
 		
-		try {
-			factories.getFactoryManager().reloadFactories();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			factories.getFactoryManager().reloadFactories();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
-		FactoryEvent fEvent = new FactoryEvent(this);
+		fEvent = new FactoryEvent(this);
 		
 	    Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 	    	
             public void run() {
                 FactoryScheduleManager.handleSchedules();
             }
-        }, 1L, 1L);
+        }, 1000L, 1000L);
 	}
 
 	@Override
@@ -50,24 +49,28 @@ public class Main extends JavaPlugin {
 			this.c.save(cFile);
 			this.cf.save(cFFile);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	
+	public FactoryEvent getfEvent() {
+		return fEvent;
+	}
+
+
 	private void createFactoryConfig() {
 		
 		try {
             if (!getDataFolder().exists()) {
                 getDataFolder().mkdirs();
             }
-            cFFile = new File(getDataFolder(), "factoryconfig.yml");
+            cFFile = new File(getDataFolder(), "config.yml");
             if (!cFFile.exists()) {
-                getLogger().info("FactoryConfig.yml not found, creating!");
-                this.saveConfig();
+                getLogger().info("Config.yml not found, creating!");
+                cf.save(cFFile);
             } else {
-                getLogger().info("FactoryConfig.yml found, loading!");
+                getLogger().info("Config.yml found, loading!");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -75,15 +78,15 @@ public class Main extends JavaPlugin {
         }
 		
 		cf = YamlConfiguration.loadConfiguration(cFFile);
-		
-		cf.options().header("FactionFactories Config: \n");
+ 		
+ 		cf.options().header("FactionFactories Config: \n");
+ 		
+ 		cf.options().copyDefaults(true);
 
-		cf.createSection("factories");
-		
-		cf.options().copyDefaults(true);
 		try {
 			cf.save(cFFile);
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -109,7 +112,7 @@ public class Main extends JavaPlugin {
             cFile = new File(getDataFolder(), "config.yml");
             if (!cFile.exists()) {
                 getLogger().info("Config.yml not found, creating!");
-                this.saveConfig();
+                c.save(cFile);
             } else {
                 getLogger().info("Config.yml found, loading!");
             }
@@ -134,10 +137,10 @@ public class Main extends JavaPlugin {
 		c.addDefault("health timer", 1000);
 
 		c.createSection("tiers");
-		c.addDefault("tiers.coal", 1);
-		c.addDefault("tiers.iron", 2);
-		c.addDefault("tiers.gold", 3);
-		c.addDefault("tiers.diamond", 4);
+		c.addDefault("tiers.1", "coal");
+		c.addDefault("tiers.1", "iron");
+		c.addDefault("tiers.2", "gold");
+		c.addDefault("tiers.3", "diamond");
 		
 		
 		c.addDefault("new factory message", "You've created a new Factory!");
@@ -149,12 +152,16 @@ public class Main extends JavaPlugin {
 		c.addDefault("not authorized", "Sorry, you are not authorized in this factory!");
 		
 		c.createSection("items");
-		c.addDefault("items.stone", 100);
-		c.addDefault("items.coal", 80);
-		c.addDefault("items.iron", 60);
-		c.addDefault("items.gold", 40);
-		c.addDefault("items.diamond", 20);
-		c.addDefault("items.emerald", 15);
+		c.addDefault("items.1.coal", "coal");
+		c.addDefault("items.1.coal.coal.chance", 80);
+		c.addDefault("items.1.coal", "stone");
+		c.addDefault("items.1.coal.stone.chance", 60);
+		c.addDefault("items.1.coal", "diamond");
+		c.addDefault("items.1.coal.diamond.chance", 10);
+		c.addDefault("items.1.coal", "lava_bucket");
+		c.addDefault("items.1.coal.lava_bucket", 10);
+		c.addDefault("items.1.iron", "iron_ingot");
+		c.addDefault("items.1.iron.iron_ingot.chance", 100);
 		
 		
 		c.options().copyDefaults(true);

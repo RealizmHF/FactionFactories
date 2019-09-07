@@ -2,4 +2,5 @@ main: io.github.RealizmHF.Main
 name: FactionFactories
 version: 1.0
 author: RealizmHF
-depend: [Factions]
+depend: [Factions, SmartInvs]
+softdepend: [HolographicDisplays]

@@ -28,13 +28,6 @@ public class FactoryScheduleManager {
         return true;
         }
  
-    public static double getRemaining(UUID key, int factoryID) {
-        if(!cooldown.containsKey(key))
-        	return 0.0;
-        if(!cooldown.get(key).healthTimer.containsKey(factoryID))
-        	return 0.0;
-        return 0;//utilTime.convert((cooldown.get(key).healthTimer.get(factoryID).seconds + cooldown.get(key).healthTimer.get(factoryID).sysTime) - System.currentTimeMillis(), TimeUnit.SECONDS, 1);
-    }
  
     public static void removeCooldown(UUID key, int factoryID) {
         if(!cooldown.containsKey(key)) {
@@ -43,10 +36,14 @@ public class FactoryScheduleManager {
         if(!cooldown.get(key).healthTimer.containsKey(factoryID)) {
             return;
         }
-        cooldown.get(key).healthTimer.remove(factoryID);
+        Factory temp = cooldown.get(key).healthTimer.remove(factoryID).factory;
+        
         Player cPlayer = Bukkit.getPlayer(key);
         if(key != null) {
             cPlayer.sendMessage(ChatColor.GRAY + "Factory ID Removed: " + ChatColor.AQUA + factoryID);
+        }
+        if(temp.isBroke()) {
+        	cPlayer.sendMessage("Factory is Broke");
         }
     }
  
@@ -57,9 +54,15 @@ public class FactoryScheduleManager {
         for(Iterator<UUID> it = cooldown.keySet().iterator(); it.hasNext();) {
             UUID key = it.next();
             for(Iterator<Integer> iter = cooldown.get(key).healthTimer.keySet().iterator(); iter.hasNext();) {
-                Integer name = iter.next();
-                if(getRemaining(key, name) <= 0.0) {
-                    removeCooldown(key, name);
+                int currentID = iter.next();
+                
+                if(cooldown.get(key).healthTimer.get(currentID).factory.getHealth() > 0) {
+                	cooldown.get(key).healthTimer.get(currentID).factory.setHeatlh(cooldown.get(key).healthTimer.get(currentID).factory.getHealth()-1);
+                	cooldown.get(key).healthTimer.get(currentID).factory.generateItems();
+                }
+                else {
+                	cooldown.get(key).healthTimer.get(currentID).factory.setBroke();
+                	removeCooldown(key, currentID);
                 }
             }
         }
