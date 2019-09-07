@@ -11,7 +11,6 @@ import org.bukkit.inventory.ItemStack;
 
 public class FactoryManager {
 
-	private ArrayList<UUID> authorizedPlayers = new ArrayList<UUID>();
 	private ArrayList<Factory> factories = new ArrayList<Factory>();
 	private ArrayList<ItemStack> bluePrints = new ArrayList<ItemStack>();
 	private ArrayList<FactoryInventory> userFactoryInventory = new ArrayList<FactoryInventory>();
@@ -60,7 +59,7 @@ public class FactoryManager {
 		if(this.bluePrints.contains(item)) {
 			System.out.println("BluePrint Found");
 			ItemStack bluePrint = this.bluePrints.get(this.bluePrints.indexOf(item));
-			int id = Integer.parseInt(item.getItemMeta().getLore().get(2).substring(4));
+			int id = Integer.parseInt(item.getItemMeta().getLore().get(1).substring(4));
 			System.out.println(id);
 			
 			for(Factory current : this.factories) {
@@ -144,8 +143,5 @@ public class FactoryManager {
 			}
 		}
 		return null;
-	}
-	public ArrayList<UUID> getAuthorizedPlayers() {
-		return this.authorizedPlayers;
 	}
 }

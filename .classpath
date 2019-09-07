@@ -16,7 +16,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="/Users/james/Desktop/Minecraft Related/Minecraft Builds/BuildTools 1.8/spigot-1.8.jar"/>
 	<classpathentry kind="lib" path="/Users/james/Desktop/Minecraft Related/Minecraft Builds/BuildTools 1.8/plugins/HolographicDisplays.jar"/>
-	<classpathentry kind="lib" path="/Users/james/Desktop/Minecraft Related/Minecraft Builds/BuildTools 1.8/plugins/SmartInvs-1.2.7.jar"/>
 	<classpathentry kind="lib" path="/Users/james/Desktop/Minecraft Related/Minecraft Builds/BuildTools 1.8/plugins/worldedit-bukkit-6.1.jar"/>
+	<classpathentry kind="lib" path="/Users/james/Desktop/Minecraft Related/Minecraft Builds/BuildTools 1.8/plugins/Vault.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

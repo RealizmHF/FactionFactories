@@ -33,7 +33,7 @@ public class FactoryCommands implements CommandExecutor {
 			//Player is OP
 			if(sender.isOp()) {
 				
-				if(args.length > 0) {
+				if(args.length == 1) {
 					
 					if(args[0].equalsIgnoreCase("create")) {
 						
@@ -45,7 +45,6 @@ public class FactoryCommands implements CommandExecutor {
 							itemMeta.setDisplayName("Common Coal Drill");
 							List<String> list = new ArrayList<String>();
 							list.add("Rank: 1");
-							list.add("Health: 100");
 							list.add("ID: " + count);
 							itemMeta.setLore(list);
 							item.setItemMeta(itemMeta);
@@ -65,6 +64,35 @@ public class FactoryCommands implements CommandExecutor {
 					}
 					else {
 						player.sendMessage("/factory create  - Creates a blue print from whatever item you're holding");
+					}
+				}
+				else if(args.length == 3) {
+					//  - /factory authorize <id> <player_name>
+					
+					if(args[0].equalsIgnoreCase("authorize")) {
+						
+						int id = Integer.parseInt(args[1]);
+						Player authPlayer = this.plugin.getServer().getPlayer(args[2]);
+						
+						if(authPlayer != null) {
+
+							if(this.factories.getFactories().size() > 0) {
+								
+								for(Factory current : this.factories.getFactories()) {
+									
+									if(current.getFactoryID() == id) {
+										
+										current.getAuthorized().add(authPlayer.getUniqueId());
+									}
+								}
+							}
+						}
+						else {
+							player.sendMessage("[FF] Player " + args[2] + " does not exist or is offline!");
+						}
+					}
+					else {
+						player.sendMessage("[FF] Command " + args[0] + " does not exist!");
 					}
 				}
 				else {

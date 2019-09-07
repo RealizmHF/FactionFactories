@@ -53,6 +53,7 @@ public class Factory {
 	private Hologram factory;
 	private RegionPaster factorySchematic;
 	private File fileSchematic;
+	private String schematicName;
 	
 	public Factory(Main plugin, Player p, ItemStack bp, int id) throws IOException {
 		this.plugin = plugin;
@@ -69,7 +70,7 @@ public class Factory {
 		authorized.add(p.getUniqueId());
 		factoryRank = 1;
 		factoryTier = 1;
-		factoryType = "coal";
+		factoryType = "Coal";
 		factoryGenerated = Bukkit.createInventory(null, inventorySize, p.getDisplayName() + "'s Factory");
 		
 		//Add factory to config
@@ -81,6 +82,8 @@ public class Factory {
 		plugin.getCF().addDefault(Integer.toString(id) + ".type", this.getFactoryType());
 		
 		plugin.getCF().save(plugin.getCFFile());
+
+		getSchematicName();
 	}
 	/*
 	 * Creates a Factory of tier 1, rank 1, of type coal
@@ -116,8 +119,10 @@ public class Factory {
 		plugin.getCF().addDefault(Integer.toString(id) + ".type", this.getFactoryType());
 		
 		plugin.getCF().save(plugin.getCFFile());
+
+		getSchematicName();
 		
-		fileSchematic = new File(this.plugin.getDataFolder(), "commonSandDrill.schematic");
+		fileSchematic = new File(this.plugin.getDataFolder(), schematicName);
 		Vector pastePosition = new Vector(this.getFactoryLocation().getBlockX()-2, this.getFactoryLocation().getBlockY()+2, this.getFactoryLocation().getBlockZ()-3);
 		World world = this.getFactoryLocation().getWorld();
 		EditSessionFactory editSession = WorldEdit.getInstance().getEditSessionFactory();
@@ -166,7 +171,9 @@ public class Factory {
 		
 		plugin.getCF().save(plugin.getCFFile());
 		
-		fileSchematic = new File(this.plugin.getDataFolder(), "commonSandDrill.schematic");
+		getSchematicName();
+		
+		fileSchematic = new File(this.plugin.getDataFolder(), schematicName);
 		Vector pastePosition = new Vector(this.getFactoryLocation().getBlockX(), this.getFactoryLocation().getBlockY(), this.getFactoryLocation().getBlockZ());
 		World world = this.getFactoryLocation().getWorld();
 		EditSessionFactory editSession = WorldEdit.getInstance().getEditSessionFactory();
@@ -321,13 +328,50 @@ public class Factory {
 		setHologram(level);
 		getHologram().appendItemLine(new ItemStack(Material.EXP_BOTTLE)).setTouchHandler( e -> {
 			
+			this.deleteGUI();
 			
+			Hologram rankTwo = HologramsAPI.createHologram(plugin, new Location(loc.getWorld(), loc.getBlockX()-1, loc.getBlockY()+2.5, loc.getBlockZ()+1.5));
+			setHologram(rankTwo);
+			getHologram().appendItemLine(new ItemStack(Material.IRON_INGOT)).setTouchHandler( f -> {
+				
+				//If they have enough money, take configurable money
+				//Set rank++
+				//Spawn new WorldEdit Schematic
+				if(this.getFactoryRank() == 1) {
+
+					this.setFactoryRank(this.getFactoryRank()+1);
+					System.out.println("Rank Upgraded to Rank 2");
+				}
+			});
+			Hologram rankThree = HologramsAPI.createHologram(plugin, new Location(loc.getWorld(), loc.getBlockX()-1, loc.getBlockY()+2.5, loc.getBlockZ()+.5));
+			setHologram(rankThree);
+			getHologram().appendItemLine(new ItemStack(Material.DIAMOND)).setTouchHandler( f -> {
+				
+				//If they have enough money, take configurable money
+				//Set rank++
+				//Spawn new WorldEdit Schematic
+				if(this.getFactoryRank() == 2) {
+
+					this.setFactoryRank(this.getFactoryRank()+1);
+				}
+			});
+			pickup = HologramsAPI.createHologram(plugin, new Location(loc.getWorld(), loc.getBlockX()-1, loc.getBlockY()+2.5, loc.getBlockZ()-.5));
+			setHologram(pickup);
+			getHologram().appendItemLine(new ItemStack(Material.BUCKET)).setTouchHandler(f -> {
+				
+				rankTwo.delete();
+				rankThree.delete();
+				pickup.delete();
+			});
 		});
 
 		
 		pickup = HologramsAPI.createHologram(plugin, new Location(loc.getWorld(), loc.getBlockX()-1, loc.getBlockY()+2.5, loc.getBlockZ()-1));
 		setHologram(pickup);
-		getHologram().appendItemLine(new ItemStack(Material.BUCKET)).setTouchHandler(this.plugin.getfEvent());
+		getHologram().appendItemLine(new ItemStack(Material.BUCKET)).setTouchHandler(e -> {
+			
+			this.deleteGUI();
+		});
 		
 		
 		
@@ -375,7 +419,7 @@ public class Factory {
 	}
 	public void pasteFactorySchematic() {
 		
-		fileSchematic = new File(this.plugin.getDataFolder(), "commonSandDrill.schematic");
+		fileSchematic = new File(this.plugin.getDataFolder(), schematicName);
 		Vector pastePosition = new Vector(this.getFactoryLocation().getBlockX(), this.getFactoryLocation().getBlockY()+1, this.getFactoryLocation().getBlockZ());
 		World world = this.getFactoryLocation().getWorld();
 		EditSessionFactory editSession = WorldEdit.getInstance().getEditSessionFactory();
@@ -388,5 +432,25 @@ public class Factory {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	public void getSchematicName() {
+		//Grabs all schematic files
+		//Finds schematic for this factory based on naming scheme
+		//Example:
+		//commonCoalFactory
+		//<tier><type>Factory
+		
+		String tempName = "";
+		
+		switch(this.getFactoryTier()) {
+		case 1: tempName = "common"; break;
+		case 2: tempName = "rare"; break;
+		case 3: tempName = "legendary"; break;
+		}
+		
+		
+		schematicName = tempName.concat(this.getFactoryType() + "Factory.schematic");
+		
+		System.out.println(schematicName);
 	}
 }
