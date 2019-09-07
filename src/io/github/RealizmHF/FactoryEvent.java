@@ -12,6 +12,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -116,6 +117,17 @@ public class FactoryEvent implements Listener, TouchHandler {
 			}
 		}
 	}
+	
+	@EventHandler
+	public void onJoin(PlayerJoinEvent event) {
+		
+		//If this is the first time joining, setup a Factory Inventory
+		if(event.getPlayer().getFirstPlayed() == 0) {
+			
+			this.factories.addUserFactoryInventory(event.getPlayer());
+		}
+	}
+	
 	
 	@EventHandler
 	public void onFactoryInventoryClose(InventoryCloseEvent event) {

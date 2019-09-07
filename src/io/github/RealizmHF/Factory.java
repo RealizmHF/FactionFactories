@@ -46,7 +46,7 @@ public class Factory {
 	private int factoryID;
 	private Hologram hologram;
 	private Inventory factoryGenerated;
-	private Hologram authorize;
+	private Hologram worker;
 	private Hologram items;
 	private Hologram level;
 	private Hologram pickup;
@@ -303,9 +303,9 @@ public class Factory {
 		Location loc = this.getFactoryLocation();
 		this.openGUI = true;
 		
-		authorize = HologramsAPI.createHologram(plugin, new Location(loc.getWorld(), loc.getBlockX()-1, loc.getBlockY()+2.5, loc.getBlockZ()+2));
-		setHologram(authorize);
-		getHologram().appendItemLine(new ItemStack(Material.DIAMOND_SWORD)).setTouchHandler( e -> {
+		worker = HologramsAPI.createHologram(plugin, new Location(loc.getWorld(), loc.getBlockX()-1, loc.getBlockY()+2.5, loc.getBlockZ()+2));
+		setHologram(worker);
+		getHologram().appendItemLine(new ItemStack(Material.DIAMOND_PICKAXE)).setTouchHandler( e -> {
 			
 			
 		});
@@ -351,7 +351,7 @@ public class Factory {
 		openGUI = false;
 		items.delete();
 		level.delete();
-		authorize.delete();
+		worker.delete();
 		pickup.delete();
 		
 	}
@@ -376,7 +376,7 @@ public class Factory {
 	public void pasteFactorySchematic() {
 		
 		fileSchematic = new File(this.plugin.getDataFolder(), "commonSandDrill.schematic");
-		Vector pastePosition = new Vector(this.getFactoryLocation().getBlockX()+3, this.getFactoryLocation().getBlockY()+3, this.getFactoryLocation().getBlockZ()-8);
+		Vector pastePosition = new Vector(this.getFactoryLocation().getBlockX(), this.getFactoryLocation().getBlockY()+1, this.getFactoryLocation().getBlockZ());
 		World world = this.getFactoryLocation().getWorld();
 		EditSessionFactory editSession = WorldEdit.getInstance().getEditSessionFactory();
 

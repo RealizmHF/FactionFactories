@@ -14,7 +14,9 @@ public class FactoryManager {
 	private ArrayList<UUID> authorizedPlayers = new ArrayList<UUID>();
 	private ArrayList<Factory> factories = new ArrayList<Factory>();
 	private ArrayList<ItemStack> bluePrints = new ArrayList<ItemStack>();
+	private ArrayList<FactoryInventory> userFactoryInventory = new ArrayList<FactoryInventory>();
 	private Main plugin;
+	
 	public static FactoryManager fManager = new FactoryManager();
 	
 	/*
@@ -34,6 +36,9 @@ public class FactoryManager {
 	public ArrayList<Factory> getFactories() {
 		return factories;
 	}
+	public ArrayList<FactoryInventory> getUserFactoryInventory() {
+		return userFactoryInventory;
+	}
 	public FactoryManager getFactoryManager(){
 		return fManager;
 	}
@@ -44,6 +49,9 @@ public class FactoryManager {
 	 * 
 	 * 
 	 */
+	public void addUserFactoryInventory(Player player) {
+		this.userFactoryInventory.add(new FactoryInventory(this.plugin, player));
+	}
 	public void addBluePrint(ItemStack item) {
 		bluePrints.add(item);
 	}
@@ -91,12 +99,14 @@ public class FactoryManager {
 	public boolean inRadius(Location loc) {
 		//If the location is within the radius of a factory, return true
 		
+		int factorySpacing = this.plugin.getC().getInt("space between factories");
+		
 		if(this.factories.size() > 0) {
 			
 			for(Factory current : this.factories) {
 				
 				if(current.getFactoryLocation() != null) {
-					int radius = current.getFactoryRadius();
+					int radius = current.getFactoryRadius() + factorySpacing;
 					int x = current.getFactoryLocation().getBlockX();
 					int z = current.getFactoryLocation().getBlockZ();
 					
@@ -110,20 +120,22 @@ public class FactoryManager {
 		return false;
 	}
 	public Factory inRadius(Player player) {
-		//If the player location is within the radius of a factory, return true
+		//If the player location is within the radius of a factory, return factory
 		
 		Location loc = player.getLocation();
+		int factorySpacing = this.plugin.getC().getInt("space between factories");
+		
 		
 		if(this.factories.size() > 0) {
 			
 			for(Factory current : this.factories) {
 				
 				if(current.getFactoryLocation() != null) {
-					int radius = current.getFactoryRadius();
+					int radius = current.getFactoryRadius() + factorySpacing;
 					int x = current.getFactoryLocation().getBlockX();
 					int z = current.getFactoryLocation().getBlockZ();
 					
-					//If the block is within the radius of a faction, return true
+					//If the block is within the radius of a faction, return the factory
 					if(loc.getBlockX() >= x - radius && loc.getBlockX() <= x + radius && loc.getBlockZ() >= z - radius && loc.getBlockZ() <= z + radius) {
 						return current;
 					}
