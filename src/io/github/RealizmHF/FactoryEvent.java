@@ -107,76 +107,16 @@ public class FactoryEvent implements Listener, TouchHandler {
 					}
 				}
 				else {
+					//Else, Factory has a location and therefore cannot be placed again
+					/*
+					 * Plans to format text with bold and coloring
+					 */
 					event.getPlayer().sendMessage("[FF] This factory has already been placed!");
 				}
 			}
 		}
 	}
 	
-	@EventHandler
-	public void onBluePrintPlaced(BlockPlaceEvent event) throws IOException {
-		
-		//Check to make sure the block being placed is a factory block
-		if(event.getBlock().getType() == Material.GOLD_BLOCK) {
-			
-			Faction faction = BoardColl.get().getFactionAt(PS.valueOf(event.getBlock().getLocation()));
-			
-			//Check if the factory is being placed inside a faction
-			//Check if the player is in their own faction territory
-			if(faction != null && MPlayer.get(event.getPlayer().getUniqueId()).isInOwnTerritory()) {
-				
-				int radius = this.plugin.getC().getInt("radius");
-				Faction checkXPlus = BoardColl.get().getFactionAt(PS.valueOf(new Location(event.getBlock().getWorld(), event.getBlock().getLocation().getX() + radius, event.getBlock().getLocation().getY(), event.getBlock().getLocation().getZ())));
-				Faction checkXMinus = BoardColl.get().getFactionAt(PS.valueOf(new Location(event.getBlock().getWorld(), event.getBlock().getLocation().getX() - radius, event.getBlock().getLocation().getY(), event.getBlock().getLocation().getZ())));
-				Faction checkZPlus = BoardColl.get().getFactionAt(PS.valueOf(new Location(event.getBlock().getWorld(), event.getBlock().getLocation().getX(), event.getBlock().getLocation().getY(), event.getBlock().getLocation().getZ() + radius)));
-				Faction checkZMinus = BoardColl.get().getFactionAt(PS.valueOf(new Location(event.getBlock().getWorld(), event.getBlock().getLocation().getX(), event.getBlock().getLocation().getY(), event.getBlock().getLocation().getZ() - radius)));
-
-
-				//Check if the factory is completely inside the faction
-				if(checkXPlus != null && checkXMinus != null && checkZPlus != null && checkZMinus != null) {
-
-					//Check if the factory is overlapping another factory
-					if(!factories.inRadius(event.getBlock().getLocation())) {
-						
-						Factory newFactory = new Factory(plugin, event.getPlayer(), event.getBlock().getLocation(), count);
-						newFactory.setBluePrint(event.getItemInHand());
-						//Add the new factory to the current list of factories
-						this.factories.addFactory(newFactory);
-						FactoryScheduleManager.add(event.getPlayer(), newFactory, this.plugin.getC().getLong("health timer"), System.currentTimeMillis());
-						this.count++;
-						
-						event.getPlayer().sendMessage("New Factory Placed!");
-						
-					}
-					else {
-						//Else, Factory is overlapping already existing factory(s)
-						/*
-						 * Plans to format text with bold and coloring
-						 */
-						event.setCancelled(true);
-						event.getPlayer().sendMessage("[FF] There isn't enough faction land for a factory here!");
-					}
-					
-				}
-				else {
-					//Else, Factory isn't completely inside the faction
-					/*
-					 * Plans to format text with bold and coloring
-					 */
-					event.setCancelled(true);
-					event.getPlayer().sendMessage("[FF] There isn't enough faction land for a factory here!");
-				}
-			}
-			else {
-				//Else, Factory isn't placed inside a Faction
-				/*
-				 * Plans to format text with bold and coloring
-				 */
-				event.setCancelled(true);
-				event.getPlayer().sendMessage("[FF] You can't place a factory outside of your own faction territory!");
-			}
-		}
-	}
 	@EventHandler
 	public void onFactoryInventoryClose(InventoryCloseEvent event) {
 		
