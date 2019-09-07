@@ -37,7 +37,6 @@ public class FactoryGenerated implements InventoryProvider {
 		factoryItems.set(1, 5, ClickableItem.of(new ItemStack(Material.EXP_BOTTLE), 
 				e -> INVENTORY.open(player, pages.page(2).next().getPage())));
 	}
-
 	public void update(Player arg0, InventoryContents arg1) {
 		// TODO Auto-generated method stub
 		
