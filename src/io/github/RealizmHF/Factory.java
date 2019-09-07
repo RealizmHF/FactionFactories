@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -54,7 +55,7 @@ public class Factory {
 	private int factoryRank;
 	private String factoryType;
 	private int factoryTier;
-	private Material tempBluePrint = Material.GOLD_BLOCK;
+	private ItemStack bluePrint;
 	private int factoryID;
 	private Hologram hologram;
 	private Inventory factoryGenerated;
@@ -66,6 +67,34 @@ public class Factory {
 	private RegionPaster factorySchematic;
 	private File fileSchematic;
 	
+	public Factory(Main plugin, Player p, ItemStack bp, int id) throws IOException {
+		this.plugin = plugin;
+		
+		bluePrint = bp;
+		factoryID = id;
+		isBroken = false;
+		health = 100;
+		repairMultiplier = plugin.getC().getDouble("repair");
+		inventorySize = plugin.getC().getInt("inventory size");
+		factoryRadius = plugin.getC().getInt("radius");
+		factoryLocation = null;
+		authorized = new ArrayList<UUID>();
+		authorized.add(p.getUniqueId());
+		factoryRank = 1;
+		factoryTier = 1;
+		factoryType = "coal";
+		factoryGenerated = Bukkit.createInventory(null, inventorySize, p.getDisplayName() + "'s Factory");
+		
+		//Add factory to config
+		plugin.getCF().createSection(Integer.toString(id));
+		plugin.getCF().createSection(Integer.toString(id) + ".authorized");
+		plugin.getCF().createSection(Integer.toString(id) + ".authorized." + p.getUniqueId().toString());
+		plugin.getCF().addDefault(Integer.toString(id) + ".rank", this.getFactoryRank());
+		plugin.getCF().addDefault(Integer.toString(id) + ".tier", this.getFactoryTier());
+		plugin.getCF().addDefault(Integer.toString(id) + ".type", this.getFactoryType());
+		
+		plugin.getCF().save(plugin.getCFFile());
+	}
 	/*
 	 * Creates a Factory of tier 1, rank 1, of type coal
 	 */
@@ -86,9 +115,7 @@ public class Factory {
 		factoryType = "coal";
 		factoryGenerated = Bukkit.createInventory(null, inventorySize, p.getDisplayName() + "'s Factory");
 		
-		factory = HologramsAPI.createHologram(plugin, new Location(l.getWorld(), l.getBlockX()-5, l.getBlockY()+2, l.getBlockZ()+5));
-		setHologram(factory);
-		getHologram().appendTextLine(p.getDisplayName() +  "'s Factory").setTouchHandler(this.plugin.getfEvent());
+		createFactoryName();
 		
 		//Add factory to config
 		plugin.getCF().createSection(Integer.toString(id));
@@ -212,6 +239,9 @@ public class Factory {
 	public boolean isGUIOpen() {
 		return this.openGUI;
 	}
+	public ItemStack getBluePrint() {
+		return this.bluePrint;
+	}
 	/*
 	 * 
 	 * 
@@ -243,6 +273,9 @@ public class Factory {
 	}
 	public void setFactoryType(String type) {
 		this.factoryType = type;
+	}
+	public void setBluePrint(ItemStack item) {
+		this.bluePrint = item;
 	}
 	/*
 	 * 
@@ -283,21 +316,21 @@ public class Factory {
 		Location loc = this.getFactoryLocation();
 		this.openGUI = true;
 		
-		authorize = HologramsAPI.createHologram(plugin, new Location(loc.getWorld(), loc.getBlockX()-5, loc.getBlockY()+1.5, loc.getBlockZ()+7));
+		authorize = HologramsAPI.createHologram(plugin, new Location(loc.getWorld(), loc.getBlockX()-1, loc.getBlockY()+2.5, loc.getBlockZ()+2));
 		setHologram(authorize);
 		getHologram().appendItemLine(new ItemStack(Material.DIAMOND_SWORD)).setTouchHandler( e -> {
 			
 			
 		});
 		
-		items = HologramsAPI.createHologram(plugin, new Location(loc.getWorld(), loc.getBlockX()-5, loc.getBlockY()+1.5, loc.getBlockZ()+6));
+		items = HologramsAPI.createHologram(plugin, new Location(loc.getWorld(), loc.getBlockX()-1, loc.getBlockY()+2.5, loc.getBlockZ()+1));
 		setHologram(items);
 		getHologram().appendItemLine(new ItemStack(Material.CHEST)).setTouchHandler( e -> {
 			
 			player.openInventory(this.getFactoryGenerated());
 		});
 
-		level = HologramsAPI.createHologram(plugin, new Location(loc.getWorld(), loc.getBlockX()-5, loc.getBlockY()+1.5, loc.getBlockZ()+5));
+		level = HologramsAPI.createHologram(plugin, new Location(loc.getWorld(), loc.getBlockX()-1, loc.getBlockY()+2.5, loc.getBlockZ()));
 		setHologram(level);
 		getHologram().appendItemLine(new ItemStack(Material.EXP_BOTTLE)).setTouchHandler( e -> {
 			
@@ -305,12 +338,26 @@ public class Factory {
 		});
 
 		
-		pickup = HologramsAPI.createHologram(plugin, new Location(loc.getWorld(), loc.getBlockX()-5, loc.getBlockY()+1.5, loc.getBlockZ()+4));
+		pickup = HologramsAPI.createHologram(plugin, new Location(loc.getWorld(), loc.getBlockX()-1, loc.getBlockY()+2.5, loc.getBlockZ()-1));
 		setHologram(pickup);
 		getHologram().appendItemLine(new ItemStack(Material.BUCKET)).setTouchHandler(this.plugin.getfEvent());
 		
 		
 		
+	}
+	public void createFactoryName() {
+		//Creates the initial hologram to show the owner's username
+		
+		factory = HologramsAPI.createHologram(plugin, new Location(this.getFactoryLocation().getWorld(), this.factoryLocation.getBlockX()-1, this.factoryLocation.getBlockY()+3, this.factoryLocation.getBlockZ()+.5));
+		setHologram(factory);
+		getHologram().appendTextLine(this.plugin.getServer().getOfflinePlayer(this.authorized.get(0)).getPlayer().getDisplayName() +  "'s Factory").setTouchHandler(this.plugin.getfEvent());
+	}
+	public void setLocationConfigs() {
+		//Creates the location configs when placed
+		
+		plugin.getCF().addDefault(Integer.toString(this.getFactoryID()) + ".x", this.getFactoryLocation().getX());
+		plugin.getCF().addDefault(Integer.toString(this.getFactoryID()) + ".y", this.getFactoryLocation().getY());
+		plugin.getCF().addDefault(Integer.toString(this.getFactoryID()) + ".z", this.getFactoryLocation().getZ());
 	}
 	public void deleteGUI() {
 		
@@ -325,8 +372,8 @@ public class Factory {
 		
 
 		factory.delete();
-		Vector pos1 = new Vector(this.getFactoryLocation().getBlockX(), this.getFactoryLocation().getBlockY()-5, this.getFactoryLocation().getBlockZ());
-		Vector pos2 = new Vector(this.getFactoryLocation().getBlockX()-11, this.getFactoryLocation().getBlockY()+20, this.getFactoryLocation().getBlockZ()+11);
+		Vector pos1 = new Vector(this.getFactoryLocation().getBlockX()-5, this.getFactoryLocation().getBlockY()+1, this.getFactoryLocation().getBlockZ()-5);
+		Vector pos2 = new Vector(this.getFactoryLocation().getBlockX()+5, this.getFactoryLocation().getBlockY()+17, this.getFactoryLocation().getBlockZ()+5);
 		CuboidRegion region = new CuboidRegion(pos1, pos2);
 		
 		World world = this.getFactoryLocation().getWorld();
@@ -334,9 +381,25 @@ public class Factory {
 		EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession((com.sk89q.worldedit.world.World) new BukkitWorld(world), 999999999);
 		try {
 		    editSession.setBlocks(region, new BaseBlock(BlockID.AIR));
-		    editSession.fillXZ(pos1, new BaseBlock(BlockID.DIRT), 11, 5, false);
+		    
 		} catch (MaxChangedBlocksException e) {
 		    // As of the blocks are unlimited this should not be called
+		}
+	}
+	public void pasteFactorySchematic() {
+		
+		fileSchematic = new File(this.plugin.getDataFolder(), "commonSandDrill.schematic");
+		Vector pastePosition = new Vector(this.getFactoryLocation().getBlockX()+3, this.getFactoryLocation().getBlockY()+3, this.getFactoryLocation().getBlockZ()-8);
+		World world = this.getFactoryLocation().getWorld();
+		EditSessionFactory editSession = WorldEdit.getInstance().getEditSessionFactory();
+
+		factorySchematic = new RegionPaster(editSession);
+		
+		try {
+			factorySchematic.loadArea(world, fileSchematic, pastePosition);
+		} catch (MaxChangedBlocksException | DataException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

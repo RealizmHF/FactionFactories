@@ -7,11 +7,13 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class FactoryManager {
 
 	private ArrayList<UUID> authorizedPlayers = new ArrayList<UUID>();
 	private ArrayList<Factory> factories = new ArrayList<Factory>();
+	private ArrayList<ItemStack> bluePrints = new ArrayList<ItemStack>();
 	private Main plugin;
 	public static FactoryManager fManager = new FactoryManager();
 	
@@ -42,6 +44,24 @@ public class FactoryManager {
 	 * 
 	 * 
 	 */
+	public void addBluePrint(ItemStack item) {
+		bluePrints.add(item);
+	}
+	public Factory isBluePrint(ItemStack item) {
+		
+		if(this.bluePrints.contains(item)) {
+			System.out.println("BluePrint Found");
+			ItemStack bluePrint = this.bluePrints.get(this.bluePrints.indexOf(item));
+			int id = Integer.parseInt(item.getItemMeta().getLore().get(2).substring(4));
+			System.out.println(id);
+			
+			for(Factory current : this.factories) {
+				if(current.getFactoryID() == id)
+					return current;
+			}
+		}
+		return null;
+	}
 	public void addFactory(Factory newFactory) {
 		factories.add(newFactory);
 	}
@@ -75,13 +95,15 @@ public class FactoryManager {
 			
 			for(Factory current : this.factories) {
 				
-				int radius = current.getFactoryRadius();
-				int x = current.getFactoryLocation().getBlockX();
-				int z = current.getFactoryLocation().getBlockZ();
-				
-				//If the block is within the radius of a faction, return true
-				if(loc.getBlockX() >= x - radius && loc.getBlockX() <= x + radius && loc.getBlockZ() >= z - radius && loc.getBlockZ() <= z + radius) {
-					return true;
+				if(current.getFactoryLocation() != null) {
+					int radius = current.getFactoryRadius();
+					int x = current.getFactoryLocation().getBlockX();
+					int z = current.getFactoryLocation().getBlockZ();
+					
+					//If the block is within the radius of a faction, return true
+					if(loc.getBlockX() >= x - radius && loc.getBlockX() <= x + radius && loc.getBlockZ() >= z - radius && loc.getBlockZ() <= z + radius) {
+						return true;
+					}
 				}
 			}
 		}
@@ -96,13 +118,15 @@ public class FactoryManager {
 			
 			for(Factory current : this.factories) {
 				
-				int radius = current.getFactoryRadius();
-				int x = current.getFactoryLocation().getBlockX();
-				int z = current.getFactoryLocation().getBlockZ();
-				
-				//If the block is within the radius of a faction, return true
-				if(loc.getBlockX() >= x - radius && loc.getBlockX() <= x + radius && loc.getBlockZ() >= z - radius && loc.getBlockZ() <= z + radius) {
-					return current;
+				if(current.getFactoryLocation() != null) {
+					int radius = current.getFactoryRadius();
+					int x = current.getFactoryLocation().getBlockX();
+					int z = current.getFactoryLocation().getBlockZ();
+					
+					//If the block is within the radius of a faction, return true
+					if(loc.getBlockX() >= x - radius && loc.getBlockX() <= x + radius && loc.getBlockZ() >= z - radius && loc.getBlockZ() <= z + radius) {
+						return current;
+					}
 				}
 			}
 		}

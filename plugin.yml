@@ -4,3 +4,7 @@ version: 1.0
 author: RealizmHF
 depend: [Factions, SmartInvs]
 softdepend: [HolographicDisplays]
+commands:
+   factory:
+      description: Create a factory
+      usage: /factory

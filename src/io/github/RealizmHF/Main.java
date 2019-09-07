@@ -2,10 +2,12 @@ package io.github.RealizmHF;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
@@ -23,6 +25,8 @@ public class Main extends JavaPlugin {
 		createFactoryConfig();
 		createConfig();
 		
+		registerBluePrint();
+		
 		FactoryManager factories = new FactoryManager(this);
 		
 //		try {
@@ -34,12 +38,14 @@ public class Main extends JavaPlugin {
 		
 		fEvent = new FactoryEvent(this);
 		
-	    Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
-	    	
-            public void run() {
-                FactoryScheduleManager.handleSchedules();
-            }
-        }, 1000L, 1000L);
+		this.getCommand("factory").setExecutor(new FactoryCommands(this));
+		
+//	    Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+//	    	
+//            public void run() {
+//                FactoryScheduleManager.handleSchedules();
+//            }
+//        }, 1000L, 1000L);
 	}
 
 	@Override
@@ -171,4 +177,23 @@ public class Main extends JavaPlugin {
 			e.printStackTrace();
 		}
 	}
+	public void registerBluePrint() {
+        try {
+            Field f = Enchantment.class.getDeclaredField("acceptingNew");
+            f.setAccessible(true);
+            f.set(null, true);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            makeBluePrint bluePrint = new makeBluePrint(70);
+            Enchantment.registerEnchantment(bluePrint);
+        }
+        catch (IllegalArgumentException e){
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 }
