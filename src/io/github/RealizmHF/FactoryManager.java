@@ -99,7 +99,7 @@ public class FactoryManager {
 	public boolean inRadius(Location loc) {
 		//If the location is within the radius of a factory, return true
 		
-		int factorySpacing = this.plugin.getC().getInt("space between factories");
+		int factorySpacing = 3;
 		
 		if(this.factories.size() > 0) {
 			
@@ -123,7 +123,8 @@ public class FactoryManager {
 		//If the player location is within the radius of a factory, return factory
 		
 		Location loc = player.getLocation();
-		int factorySpacing = this.plugin.getC().getInt("space between factories");
+		
+		int factorySpacing = 3;
 		
 		
 		if(this.factories.size() > 0) {

@@ -136,7 +136,7 @@ public class Main extends JavaPlugin {
 		
 		c.addDefault("radius", 5);
 		
-		c.addDefault("space between factories", 3);
+		c.addDefault("space_between_factories", 3);
 		
 		c.addDefault("inventory size", 9);
 		c.addDefault("repair", 1.1);
@@ -149,13 +149,13 @@ public class Main extends JavaPlugin {
 		c.addDefault("tiers.3", "diamond");
 		
 		
-		c.addDefault("new factory message", "You've created a new Factory!");
+		c.addDefault("new_factory_message", "You've created a new Factory!");
 		
-		c.addDefault("new authorized", "You've been authorized!");
+		c.addDefault("new_authorized", "You've been authorized!");
 		
-		c.addDefault("factory break error", "Sorry, you don't own this factory!");
+		c.addDefault("factory_break_error", "Sorry, you don't own this factory!");
 		
-		c.addDefault("not authorized", "Sorry, you are not authorized in this factory!");
+		c.addDefault("not_authorized", "Sorry, you are not authorized in this factory!");
 		
 		c.createSection("items");
 		c.addDefault("items.1.coal", "coal");
