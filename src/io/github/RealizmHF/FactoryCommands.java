@@ -42,7 +42,7 @@ public class FactoryCommands implements CommandExecutor {
 							ItemStack item = player.getItemInHand();
 							ItemMeta itemMeta = item.getItemMeta();
 							itemMeta.addEnchant(new makeBluePrint(count), 70, true);
-							itemMeta.setDisplayName("Common Coal Drill");
+							itemMeta.setDisplayName("Common Coal Factory");
 							List<String> list = new ArrayList<String>();
 							list.add("Rank: 1");
 							list.add("ID: " + count);

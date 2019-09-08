@@ -337,10 +337,16 @@ public class Factory {
 				//If they have enough money, take configurable money
 				//Set rank++
 				//Spawn new WorldEdit Schematic
+				
 				if(this.getFactoryRank() == 1) {
-
-					this.setFactoryRank(this.getFactoryRank()+1);
-					System.out.println("Rank Upgraded to Rank 2");
+					if(this.plugin.getEconomy().getBalance(player) > 1000) {
+						this.setFactoryRank(this.getFactoryRank()+1);
+						this.plugin.getEconomy().withdrawPlayer(player, 1000);
+						player.sendMessage("Factory Upgraded to Rank 2!");
+					}
+					else {
+						player.sendMessage("You don't have enough money!");
+					}
 				}
 			});
 			Hologram rankThree = HologramsAPI.createHologram(plugin, new Location(loc.getWorld(), loc.getBlockX()-1, loc.getBlockY()+2.5, loc.getBlockZ()+.5));

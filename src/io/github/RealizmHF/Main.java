@@ -8,7 +8,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import net.milkbowl.vault.economy.Economy;
 
 public class Main extends JavaPlugin {
 	
@@ -17,6 +20,7 @@ public class Main extends JavaPlugin {
 	private YamlConfiguration c;
 	private YamlConfiguration cf;
 	private FactoryEvent fEvent;
+	private Economy econ;
 	
 	@SuppressWarnings("unused")
 	@Override
@@ -28,17 +32,23 @@ public class Main extends JavaPlugin {
 		registerBluePrint();
 		
 		FactoryManager factories = new FactoryManager(this);
+
+		fEvent = new FactoryEvent(this);
 		
+		this.getCommand("factory").setExecutor(new FactoryCommands(this));
+		
+	    if (!setupEconomy()) {
+            this.getLogger().severe("Disabled due to no Vault dependency found!");
+            //Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
+	    
 //		try {
 //			factories.getFactoryManager().reloadFactories();
 //		} catch (IOException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-		
-		fEvent = new FactoryEvent(this);
-		
-		this.getCommand("factory").setExecutor(new FactoryCommands(this));
 		
 //	    Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
 //	    	
@@ -47,7 +57,6 @@ public class Main extends JavaPlugin {
 //            }
 //        }, 1000L, 1000L);
 	}
-
 	@Override
 	public void onDisable() {
 		
@@ -177,6 +186,21 @@ public class Main extends JavaPlugin {
 			e.printStackTrace();
 		}
 	}
+    private boolean setupEconomy() {
+        if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        econ = rsp.getProvider();
+        return econ != null;
+    }
+    public Economy getEconomy() {
+        return econ;
+    }
 	public void registerBluePrint() {
         try {
             Field f = Enchantment.class.getDeclaredField("acceptingNew");
